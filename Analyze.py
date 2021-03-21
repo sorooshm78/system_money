@@ -36,17 +36,16 @@ class Block:
 		self.list_record.append({"comment" : comment,
 								 "val" : val,
 								 "data" : data})
-	def __key_by_val(dict):
-		return dict['val']
 
-	def __key_by_data(dict):
-		return dict['data']
-
-	def sort_record_by_val:
-		list_record.sort(key=key_by_val)
+	def sort_record_by_val(self):
+		def key_by_val(dict):
+			return dict['val']
+		self.list_record.sort(key=key_by_val)
 		
-	def sort_record_by_data:
-		list_record.sort(key=key_by_data)
+	def sort_record_by_data(self):
+		def key_by_data(dict):
+			return dict['data']
+		self.list_record.sort(key=key_by_data)
 
 # Initialize variable from Excel
 Block_Data = pandas.read_excel('System_Money.xlsx', sheet_name = 'blocks')
@@ -80,6 +79,9 @@ Excel_file = 'Analyze_file.xlsx'
 book = Workbook()
 
 for block in List_Block:
+#	block.sort_record_by_val()
+#	block.sort_record_by_data()
+
 	sheet = book.create_sheet(block.name)	
 	sheet.append(["Comment", "Val", "Data"])
 	for record in block.list_record:
@@ -111,4 +113,3 @@ sheet.append(['sum', sum_allocaton, sum_expend, sum_remaining])
 # Del sheet and save Excel file
 del book['Sheet']
 book.save(Excel_file)
-"""
