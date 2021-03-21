@@ -75,7 +75,7 @@ book = Workbook()
 
 for block in List_Block:
 	sheet = book.create_sheet(block.name)	
-	sheet.append(["comment", "val", "data"])
+	sheet.append(["Comment", "Val", "Data"])
 	for record in block.list_record:
 		sheet.append([record.comment, record.val, record.data])
 
@@ -84,5 +84,24 @@ for block in List_Block:
 	sheet.append(["Expend", block.expend, "***"])
 	sheet.append(["Remaining", block.get_remaining(), "***"])
 
+# Initialize result page in Excel
+sheet = book.create_sheet('result')
+
+sheet.append(['Block', 'Allocation', 'Expend', 'remaining'])
+
+sum_allocaton = 0
+sum_expend = 0
+sum_remaining = 0
+
+for block in List_Block:
+	sheet.append([block.name, block.allocation, block.expend, block.get_remaining()])
+	sum_allocaton += block.allocation
+	sum_expend += block.expend
+	sum_remaining += block.get_remaining()
+
+sheet.append(['', '', '', ''])
+sheet.append(['sum', sum_allocaton, sum_expend, sum_remaining])
+
+# Del sheet and save Excel file
 del book['Sheet']
 book.save(Excel_file)
