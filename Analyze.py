@@ -37,16 +37,25 @@ class Block:
 								 "val" : val,
 								 "data" : data})
 
-	def sort_record_by_val(self):
+	def sort_record(self, type = "val", reverse = False):
 		def key_by_val(dict):
 			return dict['val']
-		self.list_record.sort(key=key_by_val)
-		
-	def sort_record_by_data(self):
+
 		def key_by_data(dict):
 			return dict['data']
-		self.list_record.sort(key=key_by_data)
 
+		if(type == "val"):
+			if(reverse):
+				self.list_record.sort(key=key_by_val, reverse = True)
+			else:
+				self.list_record.sort(key=key_by_val)
+	
+		if(type == "data"):
+			if(reverse):
+				self.list_record.sort(key=key_by_data, reverse = True)
+			else:
+				self.list_record.sort(key=key_by_data)
+	
 # Initialize variable from Excel
 Block_Data = pandas.read_excel('System_Money.xlsx', sheet_name = 'blocks')
 Expend_Data = pandas.read_excel('System_Money.xlsx', sheet_name = 'expend')
@@ -79,8 +88,9 @@ Excel_file = 'Analyze_file.xlsx'
 book = Workbook()
 
 for block in List_Block:
-#	block.sort_record_by_val()
-#	block.sort_record_by_data()
+
+#	block.sort_record(type = "val", reverse = False)
+#	block.sort_record(type = "data", reverse = False)
 
 	sheet = book.create_sheet(block.name)	
 	sheet.append(["Comment", "Val", "Data"])
