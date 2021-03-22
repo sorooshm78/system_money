@@ -68,20 +68,16 @@ List_Block = []
 for index_row, row in Block_Data.iterrows():
 	List_Block.append(Block(row['Name']))
 
-# function
-def find_obj(name):
-	for block in List_Block:
-		if name	== block.name:
-			return block
-
 # Extraction expend data from Excel
 for index_row, row in Expend_Data.iterrows():
-	find_obj(row['Block']).add_expend(row['Val'])
-	find_obj(row['Block']).add_record(row['Comment'], row['Val'], row['Data'])
+	block = [block for block in List_Block if block.name == row['Block']][0]
+	block.add_expend(row['Val'])
+	block.add_record(row['Comment'], row['Val'], row['Data'])
 
 # Extraction allocation data from Excel
 for index_row, row in Allocation_Data.iterrows():
-	find_obj(row['Block']).add_allocation(row['Val'])
+	block = [block for block in List_Block if block.name == row['Block']][0]
+	block.add_allocation(row['Val'])
 
 # Insert Analyze date to Excel
 Excel_file = '../data/Analyze_file.xlsx'
