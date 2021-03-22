@@ -57,9 +57,10 @@ class Block:
 				self.list_record.sort(key=key_by_data)
 	
 # Initialize variable from Excel
-Block_Data = pandas.read_excel('System_Money.xlsx', sheet_name = 'blocks')
-Expend_Data = pandas.read_excel('System_Money.xlsx', sheet_name = 'expend')
-Allocation_Data = pandas.read_excel('System_Money.xlsx', sheet_name = 'allocation')
+Excel_file = '../data/System_Money.xlsx'
+Block_Data = pandas.read_excel(Excel_file, sheet_name = 'blocks')
+Expend_Data = pandas.read_excel(Excel_file, sheet_name = 'expend')
+Allocation_Data = pandas.read_excel(Excel_file, sheet_name = 'allocation')
 
 # Initialize list obj blocks from Excel
 List_Block = []
@@ -83,7 +84,7 @@ for index_row, row in Allocation_Data.iterrows():
 	find_obj(row['Block']).add_allocation(row['Val'])
 
 # Insert Analyze date to Excel
-Excel_file = 'Analyze_file.xlsx'
+Excel_file = '../data/Analyze_file.xlsx'
 
 book = Workbook()
 
