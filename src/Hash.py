@@ -21,7 +21,7 @@ def run_analyze_file():
 
 # Path file
 Excel_file = "../data/System_Money.xlsx"
-Hash_file = "../data/hash.txt"
+Hash_file = "../data/Hash.txt"
 
 # Hash
 if os.path.exists(Hash_file):
