@@ -1,3 +1,4 @@
+import math
 import pandas
 import openpyxl
 import pandas as pd
@@ -21,7 +22,7 @@ class Block:
 		for record in self.list_record:	
 			print("comment:" + record['comment'] +
 			"\t val:" +  str(record['val']) +
-			"\t data:" + record['data'])
+			"\t date:" + record['date'])
 
 	def add_expend(self, val):
 		self.expend += val 
@@ -32,17 +33,17 @@ class Block:
 	def get_remaining(self):
 		return self.allocation - self.expend
 	
-	def add_record(self, comment, val, data):
+	def add_record(self, comment, val, date):
 		self.list_record.append({"comment" : comment,
 								 "val" : val,
-								 "data" : data})
+								 "date" : date})
 
 	def sort_record(self, type = "val", reverse = False):
 		def key_by_val(dict):
 			return dict['val']
 
-		def key_by_data(dict):
-			return dict['data']
+		def key_by_date(dict):
+			return dict['date']
 
 		if(type == "val"):
 			if(reverse):
@@ -50,11 +51,11 @@ class Block:
 			else:
 				self.list_record.sort(key=key_by_val)
 	
-		if(type == "data"):
+		if(type == "date"):
 			if(reverse):
-				self.list_record.sort(key=key_by_data, reverse = True)
+				self.list_record.sort(key=key_by_date, reverse = True)
 			else:
-				self.list_record.sort(key=key_by_data)
+				self.list_record.sort(key=key_by_date)
 	
 # Initialize variable from Excel
 Excel_file = '../data/System_Money.xlsx'
@@ -71,12 +72,16 @@ for index_row, row in Block_Data.iterrows():
 # Extraction expend data from Excel
 for index_row, row in Expend_Data.iterrows():
 	block = [block for block in List_Block if block.name == row['Block']][0]
+	if math.isnan(row['Val']):
+		raise Exception("In Sheet Expend Val Not Empty")
 	block.add_expend(row['Val'])
-	block.add_record(row['Comment'], row['Val'], row['Data'])
+	block.add_record(row['Comment'], row['Val'], row['Date'])
 
 # Extraction allocation data from Excel
 for index_row, row in Allocation_Data.iterrows():
 	block = [block for block in List_Block if block.name == row['Block']][0]
+	if math.isnan(row['Val']):
+		raise Exception("In Sheet Allocation Val Not Empty")
 	block.add_allocation(row['Val'])
 
 # Insert Analyze date to Excel
@@ -87,12 +92,12 @@ book = Workbook()
 for block in List_Block:
 
 #	block.sort_record(type = "val", reverse = False)
-#	block.sort_record(type = "data", reverse = False)
+#	block.sort_record(type = "date", reverse = False)
 
 	sheet = book.create_sheet(block.name)	
-	sheet.append(["Comment", "Val", "Data"])
+	sheet.append(["Comment", "Val", "Date"])
 	for record in block.list_record:
-		sheet.append([record['comment'], record['val'], record['data']])
+		sheet.append([record['comment'], record['val'], record['date']])
 
 	sheet.append(["", "", ""])
 	sheet.append(["Allocation", block.allocation, "***"])
