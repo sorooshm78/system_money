@@ -32,7 +32,6 @@ for index_row, row in Allocation_Data.iterrows():
 		raise Exception("In Sheet Allocation Val Not Empty")
 	block.add_allocation(row['Val'])
 
-
 # Insert Analyze date to Excel
 Excel_file = '../data/Analyze_file.xlsx'
 
