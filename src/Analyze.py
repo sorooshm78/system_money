@@ -39,7 +39,7 @@ book = Workbook()
 
 for block in List_Block:
 
-#	block.sort_record(type = "val", reverse = False)
+#	block.sort_record(type = "val", reverse = True)
 #	block.sort_record(type = "date", reverse = False)
 
 	sheet = book.create_sheet(block.name)	

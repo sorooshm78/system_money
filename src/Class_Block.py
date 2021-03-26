@@ -41,12 +41,12 @@ class Block:
 
 		if(type == "val"):
 			if(reverse):
-				self.list_record.sort(key=key_by_val, reverse = True)
+				self.list_record.sort(key=lambda x : x['val'], reverse = True)
 			else:
-				self.list_record.sort(key=key_by_val)
+				self.list_record.sort(key=lambda x : x['val'])
 	
 		if(type == "date"):
 			if(reverse):
-				self.list_record.sort(key=key_by_date, reverse = True)
+				self.list_record.sort(key=lambda x : x['date'], reverse = True)
 			else:
-				self.list_record.sort(key=key_by_date)
+				self.list_record.sort(key=lambda x : x['date'])
