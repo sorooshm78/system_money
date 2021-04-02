@@ -1,3 +1,4 @@
+import re
 import math
 import pandas
 import openpyxl
@@ -32,6 +33,27 @@ for index_row, row in Allocation_Data.iterrows():
 		raise Exception("In Sheet Allocation Val Not Empty")
 	block.add_allocation(row['Val'])
 
+
+
+
+
+
+
+date_name = {
+1 : 'فروردین',
+2 : 'اردیبهشت',
+3 : 'خرداد',
+4 : 'تیر',
+5 : 'مرداد',
+6 : 'شهریور',
+7 : 'مهر',
+8 : 'ابان',
+9 : 'اذر',
+10: 'دی',
+11: 'بهمن',
+12: 'اسفند'
+}
+
 # Insert Analyze date to Excel
 Excel_file = '../data/Analyze_file.xlsx'
 
@@ -40,17 +62,46 @@ book = Workbook()
 for block in List_Block:
 
 #	block.sort_record(type = "val", reverse = True)
-#	block.sort_record(type = "date", reverse = False)
+	block.sort_record(type = "date", reverse = False)
 
 	sheet = book.create_sheet(block.name)	
-	sheet.append(["Comment", "Val", "Date"])
-	for record in block.list_record:
-		sheet.append([record['comment'], record['val'], record['date']])
+	
+	for month in range(1, 13):
 
-	sheet.append(["", "", ""])
-	sheet.append(["Allocation", block.allocation, "***"])
-	sheet.append(["Expend", block.expend, "***"])
-	sheet.append(["Remaining", block.get_remaining(), "***"])
+		sheet.append(["month", date_name[month], month])
+		sheet.append(["Comment", "Val", "Date"])
+		for record in block.list_record:
+			m = re.findall(r'..../(..)/..', record['date'])
+			if int(m[0]) == month:
+				sheet.append([record['comment'], record['val'], record['date']])
+
+		sheet.append(["", "", ""])
+		sheet.append(["Allocation", block.allocation, "***"])
+		sheet.append(["Expend", block.expend, "***"])
+		sheet.append(["Remaining", block.get_remaining(), "***"])
+
+		sheet.append(["", "", ""])
+		sheet.append(["", "", ""])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Initialize result page in Excel
 sheet = book.create_sheet('result')
