@@ -4,7 +4,7 @@ import pandas
 import openpyxl
 import pandas as pd
 from openpyxl import Workbook
-from Class_Block import Block	
+from Class import Block	
 
 # Initialize variable from Excel
 Excel_file = '../data/System_Money.xlsx'
@@ -23,7 +23,6 @@ for index_row, row in Expend_Data.iterrows():
 	block = [block for block in List_Block if block.name == row['Block']][0]
 	if math.isnan(row['Val']):
 		raise Exception("In Sheet Expend Val Not Empty")
-	block.add_expend(row['Val'])
 	block.add_record(row['Comment'], row['Val'], row['Date'])
 
 # Extraction allocation data from Excel
@@ -31,28 +30,7 @@ for index_row, row in Allocation_Data.iterrows():
 	block = [block for block in List_Block if block.name == row['Block']][0]
 	if math.isnan(row['Val']):
 		raise Exception("In Sheet Allocation Val Not Empty")
-	block.add_allocation(row['Val'])
-
-
-
-
-
-
-
-date_name = {
-1 : 'فروردین',
-2 : 'اردیبهشت',
-3 : 'خرداد',
-4 : 'تیر',
-5 : 'مرداد',
-6 : 'شهریور',
-7 : 'مهر',
-8 : 'ابان',
-9 : 'اذر',
-10: 'دی',
-11: 'بهمن',
-12: 'اسفند'
-}
+	block.add_allocation(row['Val'], row['Date'])
 
 # Insert Analyze date to Excel
 Excel_file = '../data/Analyze_file.xlsx'
@@ -60,48 +38,22 @@ Excel_file = '../data/Analyze_file.xlsx'
 book = Workbook()
 
 for block in List_Block:
-
-#	block.sort_record(type = "val", reverse = True)
-	block.sort_record(type = "date", reverse = False)
-
 	sheet = book.create_sheet(block.name)	
-	
-	for month in range(1, 13):
-
-		sheet.append(["month", date_name[month], month])
+	for month in block.list_month:
+		sheet.append(["month", month.name, month.month])
 		sheet.append(["Comment", "Val", "Date"])
-		for record in block.list_record:
-			m = re.findall(r'..../(..)/..', record['date'])
-			if int(m[0]) == month:
-				sheet.append([record['comment'], record['val'], record['date']])
+		for record in month.list_record:
+			sheet.append([record['comment'], record['val'], record['date']])
+	
+		sheet.append(["", "", ""])
+	
+		sheet.append(["Allocation", month.allocation, "***"])
+		sheet.append(["Expend", month.expend, "***"])
+		sheet.append(["Remaining", month.get_remaining(), "***"])
 
 		sheet.append(["", "", ""])
-		sheet.append(["Allocation", block.allocation, "***"])
-		sheet.append(["Expend", block.expend, "***"])
-		sheet.append(["Remaining", block.get_remaining(), "***"])
-
 		sheet.append(["", "", ""])
-		sheet.append(["", "", ""])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
 
 # Initialize result page in Excel
 sheet = book.create_sheet('result')
@@ -113,10 +65,10 @@ sum_expend = 0
 sum_remaining = 0
 
 for block in List_Block:
-	sheet.append([block.name, block.allocation, block.expend, block.get_remaining()])
-	sum_allocaton += block.allocation
-	sum_expend += block.expend
-	sum_remaining += block.get_remaining()
+	sheet.append([block.name, block.get_total_alocation(), block.get_total_expend(), block.get_total_remaining()])
+	sum_allocaton += block.get_total_alocation()
+	sum_expend += block.get_total_expend()
+	sum_remaining += block.get_total_remaining()
 
 sheet.append(['', '', '', ''])
 sheet.append(['sum', sum_allocaton, sum_expend, sum_remaining])
